@@ -47,6 +47,7 @@ xw=xw.reshape(-1, 1)
 
 
 # STODO:Processing of the signals, to be completed by the course participants
+# step_size = 
 # .......
 # .......
 
