@@ -12,7 +12,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import scipy.signal as sc
-audio_library = 'lib_torch'  # 'lib_sd' or 'lib_torch'
+audio_library = 'lib_sd'  # 'lib_sd' or 'lib_torch'
 if audio_library == 'lib_sd':
     import soundfile as sf
 elif audio_library == 'lib_torch':
@@ -24,8 +24,8 @@ elif audio_library == 'lib_torch':
 mynoiseScenario=2
 
 # Create file path assuming DATASETA is a subfolder of your current  directory
-noisefile = f'DATASETA/N{mynoiseScenario}.wav' 
-signalfile = f'DATASETA/vocalN{mynoiseScenario}.wav'
+noisefile = f'./DATASETA/N{mynoiseScenario}.wav' 
+signalfile = f'./DATASETA/vocalN{mynoiseScenario}.wav'
 
 # Read noise recording
 # w: sampled noise, Fs: sampling rate (same both w and xw),
@@ -47,7 +47,8 @@ xw=xw.reshape(-1, 1)
 
 
 # STODO:Processing of the signals, to be completed by the course participants
-# step_size = 
+
+
 # .......
 # .......
 
