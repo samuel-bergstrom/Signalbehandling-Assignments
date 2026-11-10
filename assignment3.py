@@ -80,7 +80,7 @@ def angdiffwrap(x, y):
     return d
 
 
-def extended_kalman(initial_position = [10, 15], intitial_velocity = [1, 1], MSE_initial = 10 * np.diag([1, 0, 0, 1]), trajectory_type = 'circle', title=''):
+def extended_kalman(initial_position = [10, 15], initial_velocity = [1, 1], MSE_initial = 10 * np.diag([1, 0, 0, 1]), trajectory_type = 'circle', title=''):
     # Parameters
     N = 100  # number of time-steps
     delta = 1  # time-step
@@ -127,7 +127,7 @@ def extended_kalman(initial_position = [10, 15], intitial_velocity = [1, 1], MSE
     P_mat = np.nan * np.ones((N+1, 4, 4))
 
     # EKF initialization
-    x_est_0 = np.hstack((trajectory[0, :] + np.array(initial_position), intitial_velocity))
+    x_est_0 = np.hstack((trajectory[0, :] + np.array(initial_position), initial_velocity))
     P_0 = MSE_initial
     P_mat[0:,:,:] = P_0
     X_est[0, :] = x_est_0
@@ -142,7 +142,7 @@ def extended_kalman(initial_position = [10, 15], intitial_velocity = [1, 1], MSE
         # [Note that we don't need to compute linearized state matrix, F is already linear] 
         x_pred = F@x_est         # prediction of state
         Pp = F@P@F.T + Q         # Updata the prediction MSE matrix
-        
+        print(Pp)
         # # STODO: to determine the linearized measurement matrix, calculate the Jacobian
     
         Rk = np.sqrt(x_est[0]**2 + x_est[1]**2)
@@ -192,53 +192,61 @@ def extended_kalman(initial_position = [10, 15], intitial_velocity = [1, 1], MSE
     # plt.show()
 
     # Plot Trajectory and Estimates with lines
-    plt.figure(3)
-    plt.plot(trajectory[:, 0], trajectory[:, 1], color=[.929, .694, .125], linewidth=2, label='True position')
-    plt.plot(trajectory_measured[:, 0], trajectory_measured[:, 1], 'k:', linewidth=2, label='Measurement')
-    plt.plot(X_est[:, 0], X_est[:, 1], '--', color=[0, .447, .741], linewidth=2, label='Estimated position')
-    plt.plot(0, 0, 'rx', linewidth=2, label='Sensor position')
-    plt.plot(x_est_0[0], x_est_0[1], 'ok', label='Initial estimate')
-    plt.grid(True)
-    plt.legend(loc='best')
-    plt.xlabel('x-position [m]', fontsize=14)
-    plt.ylabel('y-position [m]', fontsize=14)
-    plt.title(f'Trajectory and Estimates for {title}')
-    plt.xticks(fontsize=14)
-    plt.yticks(fontsize=14)
-    plt.gca().set_aspect('equal', adjustable='box')
-    plt.savefig(f'line__{trajectory_type}_{title.replace(" ", "_")}.pdf', format='pdf')
-    plt.show()
+    # plt.figure(3)
+    # plt.plot(trajectory[:, 0], trajectory[:, 1], color=[.929, .694, .125], linewidth=2, label='True position')
+    # plt.plot(trajectory_measured[:, 0], trajectory_measured[:, 1], 'k:', linewidth=2, label='Measurement')
+    # plt.plot(X_est[:, 0], X_est[:, 1], '--', color=[0, .447, .741], linewidth=2, label='Estimated position')
+    # plt.plot(0, 0, 'rx', linewidth=2, label='Sensor position')
+    # plt.plot(x_est_0[0], x_est_0[1], 'ok', label='Initial estimate')
+    # plt.grid(True)
+    # plt.legend(loc='best')
+    # plt.xlabel('x-position [m]', fontsize=14)
+    # plt.ylabel('y-position [m]', fontsize=14)
+    # plt.title(f'Trajectory and Estimates for {title}')
+    # plt.xticks(fontsize=14)
+    # plt.yticks(fontsize=14)
+    # plt.gca().set_aspect('equal', adjustable='box')
+    # plt.savefig(f'line__{trajectory_type}_{title.replace(" ", "_")}.pdf', format='pdf')
+    # plt.show()
 
-    #  Plot Trajectory and Estimates with markers
-    plt.figure(4)
-    plt.plot(0, 0, 'rx', linewidth=2, label='Sensor Position')
-    plt.plot(x_est_0[0], x_est_0[1], 'ok', label='Initial Estimate')
-    # plt.xlim([-50, 50])
-    # plt.ylim([-5, 50])
-    #-----
-    for ii in range(N): 
-        # NOTE:  a breakpoint here will allow you to visualize the estimates at each time step. Use the above plt.xlim/plt.ylim to adjust the limits of the plot if needed 
-        plt.plot(trajectory[ii, 0], trajectory[ii, 1], '-o', color=[.929, .694, .125], linewidth=2, label='True Position' if ii == 0 else "")
-        plt.plot(trajectory_measured[ii, 0], trajectory_measured[ii, 1], 'dk:', linewidth=2, label='Measurement' if ii == 0 else "")
-        plt.plot(X_est[ii+1, 0], X_est[ii+1, 1], '--s', color=[0, .447, .741], linewidth=2, label='Estimated Position' if ii == 0 else "")
-    plt.grid(True)
-    plt.legend(loc='best')
-    plt.xlabel('x-position [m]', fontsize=14)
-    plt.ylabel('y-position [m]', fontsize=14)
-    plt.title(f'Trajectory and Estimates for {title}')
-    plt.xticks(fontsize=14)
-    plt.yticks(fontsize=14)
-    plt.savefig(f'markers_{trajectory_type}_{title.replace(" ", "_")}.pdf', format='pdf')
-    plt.show()
+    # #  Plot Trajectory and Estimates with markers
+    # plt.figure(4)
+    # plt.plot(0, 0, 'rx', linewidth=2, label='Sensor Position')
+    # plt.plot(x_est_0[0], x_est_0[1], 'ok', label='Initial Estimate')
+    # # plt.xlim([-50, 50])
+    # # plt.ylim([-5, 50])
+    # #-----
+    # for ii in range(N): 
+    #     # NOTE:  a breakpoint here will allow you to visualize the estimates at each time step. Use the above plt.xlim/plt.ylim to adjust the limits of the plot if needed 
+    #     plt.plot(trajectory[ii, 0], trajectory[ii, 1], '-o', color=[.929, .694, .125], linewidth=2, label='True Position' if ii == 0 else "")
+    #     plt.plot(trajectory_measured[ii, 0], trajectory_measured[ii, 1], 'dk:', linewidth=2, label='Measurement' if ii == 0 else "")
+    #     plt.plot(X_est[ii+1, 0], X_est[ii+1, 1], '--s', color=[0, .447, .741], linewidth=2, label='Estimated Position' if ii == 0 else "")
+    # plt.grid(True)
+    # plt.legend(loc='best')
+    # plt.xlabel('x-position [m]', fontsize=14)
+    # plt.ylabel('y-position [m]', fontsize=14)
+    # plt.title(f'Trajectory and Estimates for {title}')
+    # plt.xticks(fontsize=14)
+    # plt.yticks(fontsize=14)
+    # plt.savefig(f'markers_{trajectory_type}_{title.replace(" ", "_")}.pdf', format='pdf')
+    # plt.show()
 
 #Med sjuk initial position
-extended_kalman(title='Default')
+# extended_kalman(title='Default')
 # extended_kalman(title='Default', trajectory_type='line')
 
 # extended_kalman(initial_position=[10**2, 10**2], title='Large Initial Position')
 # extended_kalman(initial_position=[10**2, 10**2], title='Large Initial Position', trajectory_type='line')
 
-# extended_kalman(intitial_velocity=[10**2, 10**2], title='Large Initial Velocity')
-# extended_kalman(intitial_velocity=[10**2, 10**2], title='Large Initial Velocity', trajectory_type='line')
+# extended_kalman(initial_velocity=[10**2, 10**2], title='Large Initial Velocity')
+# extended_kalman(initial_velocity=[10**2, 10**2], title='Large Initial Velocity', trajectory_type='line')
 
 # extended_kalman(MSE_initial=10**10 * np.ones((4,4)), title='Large Initial MSE matrix')
+# extended_kalman(MSE_initial=0 * np.ones((4,4)), title='Large Initial MSE matrix')
+
+#MSE_initial = 10 * np.diag([1, 0, 0, 1])
+extended_kalman(initial_velocity=[10**2, 10**2], MSE_initial=10**10 * np.ones((4,4)), title='Large Initial MSE matrix and Initial Velocity')
+# extended_kalman(initial_position=[10**2, 10**2], MSE_initial=10**1 * np.ones((4,4)), title='Large Initial MSE matrix and Initial Position')
+
+# extended_kalman(title='Default')
+# extended_kalman(MSE_initial=10 * np.ones((4,4)), title='Large Initial MSE matrix and Initial Position')
