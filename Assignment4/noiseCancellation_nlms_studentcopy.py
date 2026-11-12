@@ -48,9 +48,22 @@ xw=xw.reshape(-1, 1)
 
 # STODO:Processing of the signals, to be completed by the course participants
 
-print(xw)
-# .......
-# .......
+# print(xw[0])
+sample_length = len(xw)
+beta = 1
+epsilon = 0.005
+p = 50
+h = np.zeros(p)
+w_n = 0
+mu = 0
+recx = np.zeros(sample_length)
+for i in range(sample_length):
+  i_p = max(0, i-p)
+  w_n = h[0: min(p, i)].T@np.flip(w[i_p:i])
+  e = xw[i] - w_n
+  recx[i] = e
+  h[0:min(p, i)] = h[0:min(p, i)] + beta * (np.flip(w[i_p:i])/(np.linalg.norm(w[i_p:i])**2 + epsilon))*e
+
 
 
 #############################################
